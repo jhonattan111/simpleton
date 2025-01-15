@@ -1,20 +1,33 @@
 #include "main.h"
 
-using std::cout;
-using std::endl;
-using std::cin;
-
+#define SIMPLETON_MEMORY 100
 void print_welcome_message();
+void reset_positions(int *);
 
 int main() {
 
-    int memory[100] = {0};
+    char *memory[SIMPLETON_MEMORY] = { nullptr };
 
     print_welcome_message();
+    int position = 0;
+    char input[6];
 
-    cin >> memory[0];
+    while(strcmp(input, "-9999") != 0) {
+        cout << BLUE << "Insira a próxima instrução para o compilador: " << RESET << endl;
+        cout << setw(2) << setfill('0') << position << " ? " << RED;
+        cin >> input;
+        memory[position++] = input;
+    }
+    
+    int positions = position;
+    //reset_positions(&position);
+    cout << memory[0] << endl;
 
-    cout << memory[0] << "? ";
+    return 0;
+
+    for(int i = 0; i < positions; i++) {
+        cout << "memory[" << i << "]: " << memory[i] << endl;
+    };
 
     return 0;
 }
@@ -26,4 +39,8 @@ void print_welcome_message() {
     cout << " *** número da posição e um ponto de interrogração (?). ***" << endl;
     cout << " *** Então você digita a palavra para aquela posição. ***" << endl;
     cout << " *** Digite a sentinela - 99999 para terminar a entrada do seu programa ***" << endl;
+}
+
+void reset_positions(int *position) {
+    *position = 0;
 }
