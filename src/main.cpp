@@ -19,6 +19,10 @@ int main() {
     print_welcome_message();
 
     char *memory[SIMPLETON_MEMORY];
+    for (int i = 0; i < SIMPLETON_MEMORY; i++) {
+        memory[i] = new char[5];
+        strcpy(memory[i], "0000");
+    }
     int position = 0;
 
     char input[6];
@@ -30,7 +34,7 @@ int main() {
         cout << RESET;
 
         //alocar memoria
-        memory[position] = new char[5];
+        //memory[position] = new char[5];
         strcpy(memory[position], input);
         position++;
     }
@@ -59,34 +63,52 @@ void get_program(char **memory, int memory_size) {
 void execute_instruction(int voperator, int voperand, char **memory) {
     //cout << "exec instructions " << voperator << " " << *memory[voperator] << endl;
 
+    // 1009
+    // 10 - VOPERATOR
+    // 09 - VOPERAND
+    instruction_counter++;
     switch(voperator) {
         case READ:
             cout << RED << voperand << " ? " << RESET;
-            cin >> (*memory)[voperand];
+            cin >> (memory)[voperand];
+            break;
+        case WRITE:
+            cout << memory[voperand] << endl;
             break;
         case LOAD:
-            cout << RED << "load: " << memory[voperand] << RESET << endl;
             ::accumulator = atoi(memory[voperand]);
             break;
+        case STORE:
+            (*memory)[voperand] = voperator;
+            break;
         case ADD:
-            cout << RED << "add: " << memory[voperand] << RESET << endl;
             ::accumulator += atoi(memory[voperand]);
             break;
+        case SUBTRACT:
+            ::accumulator -= atoi(memory[voperand]);
+            break;
+        case DIVIDE:
+            ::accumulator *= atoi(memory[voperand]);
+            break;
+        case MULTIPLY:
+            ::accumulator *= atoi(memory[voperand]);
+            break;
         case BRANCH:
+            //GOTO
+            break;
+        case BRANCHZERO:
+            // GOTO
+            if(::accumulator == 0) ::instruction_counter = voperand;
             break;
         case HALT:
             cout << " *** Fim da execução do programa ***" << endl;
-            break;
-        case BRANCHZERO:
-            if(::accumulator == 0) {
-                ::instruction_counter = voperand;
-            }
+            return;
             break;
         default:
             cout << " *** Erro: instrução inválida (" <<  voperator << ") ***" << endl;
             break;
     }
-} 
+} `
 
 void print_welcome_message() {
     cout << GREEN << " *** Bem vindo ao Simpleton ***" << RESET << endl;
@@ -136,16 +158,23 @@ void print_board(char **memory) {
     int cols = ceil(sqrt(SIMPLETON_MEMORY));
     int lins = ceil(sqrt(SIMPLETON_MEMORY));
 
-    cout << setw(CELL_SIZE) << "-";
+    cout << setw(CELL_SIZE) << setfill(' ') << ' ';
 
     for(int i = 0; i < cols; i++) {
-        cout << setw(CELL_SIZE) << i;
+        cout << BLUE << setw(5) << setfill(' ') << i << " " << RESET;
     }
 
+    cout << endl;
+
     for (int i = 0; i < lins; i++) {
-        cout << endl << setw(CELL_SIZE) << i * lins;
-        for (int j = 0; j < cols; j++) {
-            cout << setw(CELL_SIZE) << memory[i * cols + j] << " ";
+        cout << endl << BLUE << setw(CELL_SIZE) << i * lins << RESET;
+        for(int j = 0; j < cols; j++) {
+            cout << setw(CELL_SIZE) << setfill(' ') << memory[i * cols + j] << " ";
         }
+        //for (int j = 0; j < cols; j++) {
+        //    cout << setw(CELL_SIZE) << memory[i * cols + j] << " ";
+        //}
+
+        cout << endl;
     }
 }
